@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CID Hub · Vinatea & Toyama</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080d18; --surface:#0f1623; --surface2:#161e30;
+  --border:rgba(255,255,255,0.07); --borderh:rgba(255,255,255,0.14);
+  --gold:#c9a84c; --golddim:rgba(201,168,76,0.13); --goldtxt:#e8c96a;
+  --t1:#eef2ff; --t2:#7a8fae; --t3:#3d4f6a;
+  --green:#34d399; --greendim:rgba(52,211,153,0.1);
+  --blue:#60a5fa; --bluedim:rgba(96,165,250,0.1);
+  --amber:#fbbf24; --amberdim:rgba(251,191,36,0.1);
+  --teal:#2dd4bf; --tealdim:rgba(45,212,191,0.1);
+  --purple:#a78bfa; --purpledim:rgba(167,139,250,0.1);
+  --coral:#fb923c; --coraldim:rgba(251,146,60,0.1);
+  --red:#f87171; --reddim:rgba(248,113,113,0.1);
+  --sidebar:230px; --topbar:52px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--t1);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ══ HUB ══════════════════════════════════════════════════════ */
+#hub{display:flex;height:100%;flex-direction:row;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar);height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:17px 14px 15px;border-bottom:1px solid var(--border);cursor:pointer;}
+.sb-brand:hover .sb-logo{border-color:var(--goldtxt);}
+.sb-logo{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);flex-shrink:0;transition:border-color .2s;}
+.sb-title span{display:block;font-size:14px;font-weight:600;color:var(--t1);letter-spacing:-.02em;}
+.sb-title small{font-size:10px;color:var(--t3);letter-spacing:.04em;}
+.sb-nav{flex:1;padding:10px 8px;overflow-y:auto;}
+.nav-group-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);padding:4px 8px 8px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:background .15s;user-select:none;}
+.nav-item:not(.inactive):hover{background:rgba(255,255,255,0.05);}
+.nav-item.sel{background:var(--golddim);}
+.nav-item.sel .nav-name{color:var(--goldtxt);}
+.nav-item.inactive{opacity:.4;cursor:not-allowed;}
+.nav-icon{font-size:17px;flex-shrink:0;width:24px;text-align:center;}
+.nav-name{font-size:13px;color:var(--t2);font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nav-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.nd-on{background:var(--green);animation:blink 2.4s ease-in-out infinite;}
+.nd-off{background:var(--t3);}
+.nav-key{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);background:rgba(255,255,255,0.04);border-radius:4px;padding:1px 5px;}
+.sb-footer{padding:12px 14px 16px;border-top:1px solid var(--border);}
+.sf-row{display:flex;align-items:center;gap:5px;margin-bottom:7px;}
+.sf-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2.4s ease-in-out infinite;}
+.sf-txt{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:.08em;}
+#clock{font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:500;color:var(--t1);letter-spacing:.06em;}
+#datestr{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);margin-top:3px;text-transform:uppercase;letter-spacing:.07em;}
+
+/* ── MAIN ── */
+.main{flex:1;height:100vh;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{height:var(--topbar);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:0 18px;flex-shrink:0;background:var(--surface);}
+.bc-firm{font-size:13px;color:var(--t3);}
+.bc-sep{font-size:13px;color:var(--t3);}
+#bc-tool{font-size:13px;color:var(--t2);font-weight:500;}
+.search-trig{margin-left:auto;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:9px;padding:6px 12px;cursor:pointer;transition:border-color .15s,background .15s;color:var(--t3);font-size:13px;min-width:190px;font-family:'Sora',sans-serif;}
+.search-trig:hover{border-color:var(--borderh);background:rgba(255,255,255,0.06);color:var(--t2);}
+.search-trig svg{width:14px;height:14px;flex-shrink:0;stroke-width:2;}
+.search-trig span{flex:1;}
+.search-trig kbd{font-family:'JetBrains Mono',monospace;font-size:10px;background:rgba(255,255,255,0.07);border-radius:4px;padding:2px 5px;color:var(--t3);}
+#newTabBtn{font-size:16px;color:var(--t3);background:none;border:none;cursor:pointer;padding:5px 7px;border-radius:6px;transition:color .15s,background .15s;display:none;}
+#newTabBtn:hover{color:var(--goldtxt);background:var(--golddim);}
+
+/* ── CONTENT ── */
+.content{flex:1;position:relative;overflow:hidden;}
+#home{position:absolute;inset:0;overflow-y:auto;padding:2rem;background:var(--bg);}
+#home::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:44px 44px;}
+.home-inner{position:relative;z-index:1;max-width:880px;margin:0 auto;}
+.welcome h2{font-size:23px;font-weight:600;letter-spacing:-.025em;}
+.welcome p{font-size:13px;color:var(--t2);margin-top:5px;}
+.welcome p strong{color:var(--goldtxt);}
+.hstats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:1.5rem 0 2rem;}
+.hs{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;}
+.hs .hl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;}
+.hs .hv{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:500;}
+.hv.g{color:var(--green);}.hv.r{color:var(--red);}.hv.o{color:var(--goldtxt);}
+.sec-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:2rem;}
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.2rem;cursor:pointer;transition:border-color .2s,background .2s,transform .15s;display:flex;align-items:center;gap:12px;}
+.qcard:not(.off):hover{border-color:var(--borderh);background:var(--surface2);transform:translateY(-1px);}
+.qcard.off{opacity:.4;cursor:not-allowed;}
+.qi{font-size:24px;flex-shrink:0;}.qinfo{flex:1;min-width:0;}
+.qn{font-size:13px;font-weight:600;color:var(--t1);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.qt{font-size:11px;color:var(--t3);margin-top:2px;}
+.qa{font-size:16px;color:var(--t3);transition:color .15s;}
+.qcard:not(.off):hover .qa{color:var(--goldtxt);}
+.act-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:2rem;}
+.act-head{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--border);}
+.act-head span{font-size:12px;font-weight:500;color:var(--t2);}
+.act-live{display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:.08em;}
+.act-livdot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.8s ease-in-out infinite;}
+.act-item{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--border);font-size:12px;}
+.act-item:last-child{border-bottom:none;}
+.act-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.act-name{color:var(--t2);font-weight:500;flex:1;}
+.act-action{color:var(--t3);}
+.act-time{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t3);white-space:nowrap;}
+.shortcuts-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-bottom:.5rem;}
+.sh-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t3);}
+.sh-item kbd{font-family:'JetBrains Mono',monospace;font-size:10px;background:rgba(255,255,255,0.06);border-radius:4px;padding:2px 6px;color:var(--t2);}
+
+/* ── FRAME ── */
+#frame-view{position:absolute;inset:0;display:none;}
+#frame-loader{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:10;gap:14px;}
+.spin{width:34px;height:34px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+.spin-txt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;}
+#inactive-box{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--bg);text-align:center;padding:2rem;}
+.ib-icon{font-size:48px;}.ib-title{font-size:18px;font-weight:600;color:var(--t1);}
+.ib-desc{font-size:13px;color:var(--t2);max-width:360px;line-height:1.7;}
+.ib-btn{font-size:13px;color:var(--goldtxt);background:var(--golddim);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:8px 20px;text-decoration:none;margin-top:6px;transition:background .15s;}
+.ib-btn:hover{background:rgba(201,168,76,.22);}
+#tool-frame{width:100%;height:100%;border:none;display:none;}
+
+/* ── COMMAND PALETTE ── */
+#pal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding-top:14vh;}
+#pal-overlay.hidden{display:none;}
+.pal{background:var(--surface);border:1px solid var(--borderh);border-radius:16px;width:540px;max-width:90vw;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.65);}
+.pal-inp-wrap{display:flex;align-items:center;gap:10px;padding:13px 15px;border-bottom:1px solid var(--border);}
+.pal-inp-wrap svg{width:17px;height:17px;color:var(--t3);stroke-width:2;flex-shrink:0;}
+#pal-inp{flex:1;background:none;border:none;outline:none;font-family:'Sora',sans-serif;font-size:15px;color:var(--t1);caret-color:var(--gold);}
+#pal-inp::placeholder{color:var(--t3);}
+.pal-esc{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t3);background:rgba(255,255,255,0.05);border-radius:4px;padding:2px 7px;}
+.pal-list{max-height:300px;overflow-y:auto;}
+.pi{display:flex;align-items:center;gap:12px;padding:11px 15px;cursor:pointer;transition:background .1s;}
+.pi:hover,.pi.foc{background:rgba(255,255,255,0.05);}
+.pi-icon{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
+.pi-info{flex:1;}.pi-name{font-size:14px;font-weight:500;color:var(--t1);}.pi-desc{font-size:12px;color:var(--t3);margin-top:1px;}
+.pi-badge{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.06em;padding:3px 7px;border-radius:6px;}
+.pb-on{background:var(--greendim);color:var(--green);}.pb-off{background:var(--reddim);color:var(--red);}
+.pi-key{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t3);background:rgba(255,255,255,0.04);border-radius:4px;padding:1px 6px;}
+.pal-foot{padding:8px 15px;border-top:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+.pfh{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--t3);}
+.pfh kbd{font-family:'JetBrains Mono',monospace;font-size:10px;background:rgba(255,255,255,0.06);border-radius:4px;padding:1px 5px;color:var(--t2);}
+</style>
+</head>
+<body>
+
+
+
+<!-- ══ HUB ════════════════════════════════════════════════════ -->
+<div id="hub">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-brand" id="goHome">
+      <div class="sb-logo">CID</div>
+      <div class="sb-title"><span>Hub CID</span><small>Vinatea &amp; Toyama</small></div>
+    </div>
+    <nav class="sb-nav" id="sb-nav">
+      <div class="nav-group-label">Herramientas</div>
+    </nav>
+    <div class="sb-footer">
+      <div class="sf-row"><div class="sf-dot"></div><span class="sf-txt">Activo</span></div>
+      <div id="clock">--:--:--</div>
+      <div id="datestr">---</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <span class="bc-firm">CID Hub</span>
+      <span class="bc-sep">›</span>
+      <span id="bc-tool">Inicio</span>
+      <div class="search-trig" id="searchTrig">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <span>Buscar herramienta...</span>
+        <kbd>Ctrl K</kbd>
+      </div>
+      <button id="anaBtn" title="Analítica de uso" aria-label="Ver analítica" style="font-size:16px;color:var(--t3);background:none;border:none;cursor:pointer;padding:5px 7px;border-radius:6px;transition:color .15s,background .15s;" onmouseover="this.style.color='var(--goldtxt)';this.style.background='var(--golddim)'" onmouseout="this.style.color='var(--t3)';this.style.background='none'">📊</button>
+      <button id="newTabBtn" title="Abrir en nueva pestaña" aria-label="Abrir en nueva pestaña">↗</button>
+    </div>
+
+    <div class="content">
+      <div id="home">
+        <div class="home-inner">
+          <div class="welcome">
+            <h2 id="welcome-name">Bienvenido 👋</h2>
+            <p>Selecciona una herramienta del panel o usa <strong>Ctrl+K</strong> para buscar.</p>
+          </div>
+          <div class="hstats">
+            <div class="hs"><div class="hl">Herramientas</div><div class="hv">6</div></div>
+            <div class="hs"><div class="hl">Activas</div><div class="hv g">5</div></div>
+            <div class="hs"><div class="hl">Inactivas</div><div class="hv r">1</div></div>
+            <div class="hs"><div class="hl">Versión</div><div class="hv o" style="font-size:18px;margin-top:6px">v 1.0</div></div>
+          </div>
+          <div class="sec-label">Acceso rápido</div>
+          <div class="qgrid" id="qgrid"></div>
+          <div class="sec-label">Actividad reciente</div>
+          <div class="act-box">
+            <div class="act-head">
+              <span>Registro del sistema</span>
+              <div class="act-live"><div class="act-livdot"></div>EN VIVO</div>
+            </div>
+            <div id="act-list"></div>
+          </div>
+          <div class="sec-label">Atajos de teclado</div>
+          <div class="shortcuts-row">
+            <div class="sh-item"><kbd>Ctrl K</kbd> Búsqueda rápida</div>
+            <div class="sh-item" style="margin-left:8px"><kbd>1–6</kbd> Abrir herramienta</div>
+            <div class="sh-item" style="margin-left:8px"><kbd>ESC</kbd> Volver al inicio</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="frame-view">
+        <div id="frame-loader"><div class="spin"></div><span class="spin-txt">Cargando herramienta...</span></div>
+        <div id="inactive-box">
+          <div class="ib-icon" id="ib-icon">🤖</div>
+          <div class="ib-title" id="ib-title">No disponible</div>
+          <div class="ib-desc"  id="ib-desc">Esta herramienta no está disponible aquí.</div>
+          <a href="#" id="ib-link" class="ib-btn" target="_blank" style="display:none">Abrir ↗</a>
+        </div>
+        <iframe id="tool-frame" title="Herramienta CID"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ COMMAND PALETTE ══ -->
+<div id="pal-overlay" class="hidden" role="dialog" aria-modal="true">
+  <div class="pal">
+    <div class="pal-inp-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="pal-inp" type="text" placeholder="Buscar herramienta..." autocomplete="off" spellcheck="false">
+      <span class="pal-esc">ESC</span>
+    </div>
+    <div class="pal-list" id="pal-list"></div>
+    <div class="pal-foot">
+      <div class="pfh"><kbd>↑↓</kbd> navegar</div>
+      <div class="pfh"><kbd>Enter</kbd> abrir</div>
+      <div class="pfh"><kbd>ESC</kbd> cerrar</div>
+      <div class="pfh" style="margin-left:auto"><kbd>1–6</kbd> directo</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ANALYTICS OVERLAY ══ -->
+<div id="ana-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1001;display:none;align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border:1px solid var(--borderh);border-radius:18px;width:660px;max-width:95vw;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.7);">
+
+    <!-- head -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:18px;">📊</span>
+        <span style="font-size:15px;font-weight:600;color:var(--t1);">Analítica de uso</span>
+        <span style="display:flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:.08em;">
+          <span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;animation:blink 1.8s ease-in-out infinite;"></span>EN VIVO
+        </span>
+      </div>
+      <button id="ana-close" style="background:none;border:none;color:var(--t3);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:6px;line-height:1;" title="Cerrar">✕</button>
+    </div>
+
+    <!-- body -->
+    <div style="overflow-y:auto;padding:20px;" id="ana-body">
+
+      <!-- KPIs -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px;" id="ana-kpis"></div>
+
+      <!-- Bar chart -->
+      <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+        Aperturas por herramienta
+        <span style="flex:1;height:1px;background:var(--border);display:block;"></span>
+      </div>
+      <div id="ana-bars" style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;"></div>
+
+      <!-- Hour heatmap -->
+      <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+        Actividad por hora del día
+        <span style="flex:1;height:1px;background:var(--border);display:block;"></span>
+      </div>
+      <div id="ana-hours" style="display:grid;grid-template-columns:repeat(24,1fr);gap:2px;align-items:end;height:52px;margin-bottom:4px;"></div>
+      <div style="display:grid;grid-template-columns:repeat(24,1fr);margin-bottom:22px;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t3);text-align:center;">0</span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t3);text-align:center;">6</span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t3);text-align:center;">12</span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t3);text-align:center;">18</span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t3);text-align:center;">23</span>
+      </div>
+
+      <!-- Reset -->
+      <div style="text-align:right;">
+        <button id="ana-reset" style="font-family:'Sora',sans-serif;font-size:11px;color:var(--t3);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;padding:5px 12px;cursor:pointer;transition:color .15s,border-color .15s;" onmouseover="this.style.color='var(--red)';this.style.borderColor='rgba(248,113,113,.3)'" onmouseout="this.style.color='var(--t3)';this.style.borderColor='var(--border)'">Limpiar datos</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ CONFIGURACIÓN ═════════════════════════════════════════════
+// Pega aquí la URL de tu Apps Script deployment
+const APPS_SCRIPT_URL = 'PEGAR_URL_APPS_SCRIPT_AQUI';
+
+const TOOLS = [
+  {id:'flujos', name:'Flujos Procesales',         desc:'Flujos NLPT con búsqueda IA (Gemini)',             tags:['flujos','nlpt','ordinario','abreviado','amparo','ia'], icon:'⚖️', color:'#60a5fa', url:'URL_FLUJOS_PROCESALES',   active:true},
+  {id:'anal',   name:'Analizador CEJ Supremo',    desc:'Clasifica agendas judiciales con IA (en Claude)',  tags:['cej','agendas','excel','supremo','ia'],                icon:'🤖', color:'#fbbf24', url:null,                      active:false, inactiveDesc:'Esta herramienta usa la API de Anthropic y funciona directamente en Claude.',inactiveLink:'https://claude.ai',inactiveLinkTxt:'Abrir Claude ↗'},
+  {id:'redis',  name:'Redistribución de Procesos',desc:'Distribución de procesos entre equipos',          tags:['redistribución','procesos','equipos'],                icon:'📊', color:'#2dd4bf', url:'URL_REDISTRIBUCION',       active:true},
+  {id:'obj',    name:'Seguimiento de Objetivos',  desc:'Metas, KPIs y compromisos del equipo CID',        tags:['objetivos','kpis','metas','seguimiento'],             icon:'🎯', color:'#a78bfa', url:'URL_OBJETIVOS',            active:true},
+  {id:'homo',   name:'Homologación',              desc:'Validación y homologación de datos procesales',   tags:['homologación','validación','datos'],                  icon:'📋', color:'#fb923c', url:'URL_HOMOLOGACION',          active:true},
+  {id:'cruce',  name:'Cruce de Agendas',          desc:'Detección de conflictos en agendas judiciales',  tags:['cruce','agendas','audiencias','conflictos'],          icon:'📅', color:'#94a3b8', url:'URL_CRUCE_AGENDAS',         active:true},
+];
+
+const ACTIVITY = [
+  {tid:'flujos',action:'Consultado',mins:3},{tid:'redis',action:'Cargado',mins:9},
+  {tid:'obj',   action:'Revisado',  mins:18},{tid:'cruce',action:'Consultado',mins:26},
+  {tid:'homo',  action:'Actualizado',mins:51},{tid:'redis',action:'Consultado',mins:67},
+];
+
+// ══ HUB LOGIC ═════════════════════════════════════════════════
+let currentId=null, focIdx=-1;
+
+function buildNav(){
+  const nav=document.getElementById('sb-nav');
+  TOOLS.forEach((t,i)=>{
+    const el=document.createElement('div');
+    el.className='nav-item'+(t.active?'':' inactive');
+    el.id='nav-'+t.id;
+    el.innerHTML=`<span class="nav-icon">${t.icon}</span><span class="nav-name">${t.name}</span><span class="nav-dot ${t.active?'nd-on':'nd-off'}"></span><span class="nav-key">${i+1}</span>`;
+    if(t.active) el.addEventListener('click',()=>openTool(t.id));
+    nav.appendChild(el);
+  });
+}
+
+function buildQuick(){
+  const g=document.getElementById('qgrid');
+  TOOLS.forEach(t=>{
+    const el=document.createElement('div');
+    el.className='qcard'+(t.active?'':' off');
+    el.innerHTML=`<div class="qi">${t.icon}</div><div class="qinfo"><div class="qn">${t.name}</div><div class="qt">${t.tags.slice(0,2).join(' · ')}</div></div><div class="qa">›</div>`;
+    if(t.active) el.addEventListener('click',()=>openTool(t.id));
+    g.appendChild(el);
+  });
+}
+
+function buildActivity(){
+  const list=document.getElementById('act-list');
+  ACTIVITY.forEach(a=>{
+    const t=TOOLS.find(x=>x.id===a.tid);
+    const m=a.mins, time=m<60?`Hace ${m}m`:`Hace ${Math.floor(m/60)}h ${m%60>0?m%60+'m':''}`;
+    const el=document.createElement('div');
+    el.className='act-item';
+    el.innerHTML=`<div class="act-dot" style="background:${t.color}"></div><span class="act-name">${t.name}</span><span class="act-action">${a.action}</span><span class="act-time">${time.trim()}</span>`;
+    list.appendChild(el);
+  });
+}
+
+function logAccess(toolId){
+  if(APPS_SCRIPT_URL==='PEGAR_URL_APPS_SCRIPT_AQUI') return;
+  fetch(`${APPS_SCRIPT_URL}?action=log&tool=${toolId}`).catch(()=>{});
+}
+
+function openTool(id){
+  const t=TOOLS.find(x=>x.id===id); if(!t) return;
+  currentId=id;
+  document.getElementById('bc-tool').textContent=t.name;
+  document.getElementById('home').style.display='none';
+  document.getElementById('frame-view').style.display='block';
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('sel'));
+  const ni=document.getElementById('nav-'+id); if(ni) ni.classList.add('sel');
+
+  const loader=document.getElementById('frame-loader');
+  const notice=document.getElementById('inactive-box');
+  const frame=document.getElementById('tool-frame');
+  const ntb=document.getElementById('newTabBtn');
+
+  anaTrack(id);
+  logAccess(id);
+
+  if(!t.active||!t.url||t.url.startsWith('URL_')){
+    loader.style.display='none'; frame.style.display='none'; ntb.style.display='none';
+    document.getElementById('ib-icon').textContent  = t.icon;
+    document.getElementById('ib-title').textContent = t.name;
+    document.getElementById('ib-desc').textContent  = t.inactiveDesc||'No disponible.';
+    const lnk=document.getElementById('ib-link');
+    if(t.inactiveLink){lnk.href=t.inactiveLink;lnk.textContent=t.inactiveLinkTxt||'Abrir ↗';lnk.style.display='inline-block';}
+    else lnk.style.display='none';
+    notice.style.display='flex'; return;
+  }
+
+  notice.style.display='none'; loader.style.display='flex'; frame.style.display='none';
+  ntb.style.display='flex'; ntb.onclick=()=>window.open(t.url,'_blank');
+  frame.onload=()=>{ loader.style.display='none'; frame.style.display='block'; };
+  frame.src=t.url;
+}
+
+function goHome(){
+  currentId=null;
+  document.getElementById('bc-tool').textContent='Inicio';
+  document.getElementById('home').style.display='block';
+  document.getElementById('frame-view').style.display='none';
+  document.getElementById('newTabBtn').style.display='none';
+  const f=document.getElementById('tool-frame'); if(f) f.src='about:blank';
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('sel'));
+}
+
+document.getElementById('goHome').addEventListener('click', goHome);
+
+// ── CLOCK ──
+const DIAS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+function pad(n){return String(n).padStart(2,'0');}
+function tick(){
+  const n=new Date();
+  document.getElementById('clock').textContent=pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());
+  document.getElementById('datestr').textContent=DIAS[n.getDay()]+' '+n.getDate()+' '+MES[n.getMonth()];
+}
+tick(); setInterval(tick,1000);
+
+// ── COMMAND PALETTE ──
+function openPal(){
+  focIdx=-1;
+  document.getElementById('pal-overlay').classList.remove('hidden');
+  const inp=document.getElementById('pal-inp');
+  inp.value=''; renderPal(''); inp.focus();
+}
+function closePal(){document.getElementById('pal-overlay').classList.add('hidden');focIdx=-1;}
+function renderPal(q){
+  const ql=q.toLowerCase().trim();
+  const list=ql?TOOLS.filter(t=>t.name.toLowerCase().includes(ql)||t.desc.toLowerCase().includes(ql)||t.tags.some(g=>g.includes(ql))):TOOLS;
+  const ul=document.getElementById('pal-list'); ul.innerHTML='';
+  list.forEach((t,i)=>{
+    const orig=TOOLS.indexOf(t);
+    const el=document.createElement('div');
+    el.className='pi'+(i===focIdx?' foc':'');
+    el.dataset.id=t.id;
+    el.innerHTML=`<div class="pi-icon">${t.icon}</div><div class="pi-info"><div class="pi-name">${t.name}</div><div class="pi-desc">${t.desc}</div></div><span class="pi-badge ${t.active?'pb-on':'pb-off'}">${t.active?'Activo':'Inactivo'}</span><span class="pi-key">${orig+1}</span>`;
+    el.addEventListener('click',()=>{closePal();openTool(t.id);});
+    el.addEventListener('mouseenter',()=>{focIdx=i;renderPal(document.getElementById('pal-inp').value);});
+    ul.appendChild(el);
+  });
+}
+
+document.getElementById('pal-inp').addEventListener('input',e=>{focIdx=-1;renderPal(e.target.value);});
+document.getElementById('searchTrig').addEventListener('click', openPal);
+document.getElementById('pal-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('pal-overlay'))closePal();});
+
+// ── KEYBOARD ──
+document.addEventListener('keydown',e=>{
+  const open=!document.getElementById('pal-overlay').classList.contains('hidden');
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();open?closePal():openPal();return;}
+  if(e.key==='Escape'){if(open){closePal();return;}if(currentId)goHome();return;}
+  if(!open&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&document.activeElement.tagName!=='INPUT'){
+    const n=parseInt(e.key);
+    if(n>=1&&n<=6){openTool(TOOLS[n-1].id);return;}
+  }
+  if(open){
+    const items=document.querySelectorAll('.pi');
+    if(e.key==='ArrowDown'){e.preventDefault();focIdx=Math.min(focIdx+1,items.length-1);renderPal(document.getElementById('pal-inp').value);}
+    else if(e.key==='ArrowUp'){e.preventDefault();focIdx=Math.max(focIdx-1,0);renderPal(document.getElementById('pal-inp').value);}
+    else if(e.key==='Enter'&&focIdx>=0){const foc=document.querySelector('.pi.foc');if(foc){closePal();openTool(foc.dataset.id);}}
+  }
+});
+
+// ══ ANALYTICS ════════════════════════════════════════════════
+const ANA_KEY = 'cid_hub_analytics';
+
+function anaLoad(){
+  try{ return JSON.parse(localStorage.getItem(ANA_KEY)) || {events:[]}; }
+  catch(e){ return {events:[]}; }
+}
+function anaSave(data){ localStorage.setItem(ANA_KEY, JSON.stringify(data)); }
+
+function anaTrack(toolId){
+  const data = anaLoad();
+  data.events.push({ t: toolId, ts: Date.now() });
+  // guardar solo últimos 2000 eventos
+  if(data.events.length > 2000) data.events = data.events.slice(-2000);
+  anaSave(data);
+}
+
+function anaRender(){
+  const data   = anaLoad();
+  const events = data.events || [];
+  const now    = Date.now();
+  const today  = new Date(); today.setHours(0,0,0,0);
+  const week   = new Date(now - 7*24*60*60*1000);
+
+  const counts = {}, todayCounts = {}, hourMap = Array(24).fill(0);
+  events.forEach(ev=>{
+    counts[ev.t] = (counts[ev.t]||0)+1;
+    if(ev.ts >= today.getTime()) todayCounts[ev.t] = (todayCounts[ev.t]||0)+1;
+    const h = new Date(ev.ts).getHours();
+    hourMap[h]++;
+  });
+
+  const total      = events.length;
+  const todayTotal = events.filter(e=>e.ts>=today.getTime()).length;
+  const weekTotal  = events.filter(e=>e.ts>=week.getTime()).length;
+  const topTool    = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+  const topName    = topTool ? (TOOLS.find(t=>t.id===topTool[0])?.name || topTool[0]) : '—';
+
+  // ── KPIs ──
+  const kpiEl = document.getElementById('ana-kpis');
+  kpiEl.innerHTML = '';
+  const kpis = [
+    { l:'Total aperturas', v: total,      color:'var(--t1)' },
+    { l:'Hoy',             v: todayTotal, color:'var(--green)' },
+    { l:'Esta semana',     v: weekTotal,  color:'var(--goldtxt)' },
+  ];
+  kpis.forEach(k=>{
+    const d=document.createElement('div');
+    d.style.cssText='background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;';
+    d.innerHTML=`<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;">${k.l}</div><div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500;color:${k.color};">${k.v}</div>`;
+    kpiEl.appendChild(d);
+  });
+
+  // ── TOP tool badge ──
+  if(total > 0){
+    const badge = document.createElement('div');
+    badge.style.cssText='background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:-2px;margin-bottom:4px;';
+    badge.innerHTML=`<span style="font-size:20px;">${TOOLS.find(t=>t.id===topTool[0])?.icon||'⭐'}</span><div><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:3px;">Herramienta más usada</div><div style="font-size:14px;font-weight:600;color:var(--goldtxt);">${topName} <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t3);">· ${topTool[1]} aperturas</span></div></div>`;
+    kpiEl.appendChild(badge);
+  }
+
+  // ── Barras ──
+  const barsEl = document.getElementById('ana-bars');
+  barsEl.innerHTML = '';
+  const maxCount = Math.max(...Object.values(counts), 1);
+  const sorted = [...TOOLS].sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
+
+  sorted.forEach(t=>{
+    const c = counts[t.id] || 0;
+    const pct = Math.round((c/maxCount)*100);
+    const row = document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:10px;';
+    row.innerHTML=`
+      <span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">${t.icon}</span>
+      <span style="font-size:12px;color:var(--t2);width:185px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}</span>
+      <div style="flex:1;height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:${t.color};border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1);opacity:${t.active?1:.45};"></div>
+      </div>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:${c>0?'var(--t2)':'var(--t3)'};width:28px;text-align:right;flex-shrink:0;">${c}</span>`;
+    barsEl.appendChild(row);
+  });
+
+  // ── Heatmap de horas ──
+  const hoursEl = document.getElementById('ana-hours');
+  hoursEl.innerHTML = '';
+  const maxH = Math.max(...hourMap, 1);
+  hourMap.forEach((v,h)=>{
+    const pct = Math.max(Math.round((v/maxH)*100), v>0?4:0);
+    const bar = document.createElement('div');
+    const isWork = h>=8 && h<=18;
+    bar.style.cssText=`height:${pct}%;background:rgba(201,168,76,${v>0?(0.2+(v/maxH)*0.7).toFixed(2):'0.08'});border-radius:2px 2px 0 0;min-height:3px;cursor:default;`;
+    bar.title=`${String(h).padStart(2,'0')}:00 — ${v} apert.`;
+    hoursEl.appendChild(bar);
+  });
+
+  // si no hay datos
+  if(total === 0){
+    barsEl.innerHTML=`<div style="text-align:center;padding:1.5rem;font-size:13px;color:var(--t3);">Aún no hay datos. Abre algunas herramientas y regresa aquí.</div>`;
+  }
+}
+
+function openAna(){ anaRender(); document.getElementById('ana-overlay').style.display='flex'; }
+function closeAna(){ document.getElementById('ana-overlay').style.display='none'; }
+
+document.getElementById('anaBtn').addEventListener('click', openAna);
+document.getElementById('ana-close').addEventListener('click', closeAna);
+document.getElementById('ana-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('ana-overlay')) closeAna(); });
+document.getElementById('ana-reset').addEventListener('click', ()=>{
+  if(confirm('¿Limpiar todos los datos de analítica?')){ anaSave({events:[]}); anaRender(); }
+});
+
+// ══ INIT ══════════════════════════════════════════════════════
+buildNav(); buildQuick(); buildActivity();
+</script>
+</body>
+</html>
