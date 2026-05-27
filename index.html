@@ -87,15 +87,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--t1);}
 .hv.g{color:var(--green);}.hv.r{color:var(--red);}.hv.o{color:var(--goldtxt);}
 .sec-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
 .sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
-.qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:2rem;}
-.qcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.2rem;cursor:pointer;transition:border-color .2s,background .2s,transform .15s;display:flex;align-items:center;gap:12px;}
-.qcard:not(.off):hover{border-color:var(--borderh);background:var(--surface2);transform:translateY(-1px);}
-.qcard.off{opacity:.4;cursor:not-allowed;}
-.qi{font-size:24px;flex-shrink:0;}.qinfo{flex:1;min-width:0;}
-.qn{font-size:13px;font-weight:600;color:var(--t1);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.qt{font-size:11px;color:var(--t3);margin-top:2px;}
-.qa{font-size:16px;color:var(--t3);transition:color .15s;}
-.qcard:not(.off):hover .qa{color:var(--goldtxt);}
 .act-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:2rem;}
 .act-head{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--border);}
 .act-head span{font-size:12px;font-weight:500;color:var(--t2);}
@@ -210,8 +201,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--t1);}
             <div class="hs"><div class="hl">Inactivas</div><div class="hv r">1</div></div>
             <div class="hs"><div class="hl">Versión</div><div class="hv o" style="font-size:18px;margin-top:6px">v 1.0</div></div>
           </div>
-          <div class="sec-label">Acceso rápido</div>
-          <div class="qgrid" id="qgrid"></div>
+          <div class="sec-label">Plataformas externas</div>
+          <div id="ext-links" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2rem;"></div>
           <div class="sec-label">Actividad reciente</div>
           <div class="act-box">
             <div class="act-head">
@@ -323,9 +314,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--t1);}
 const APPS_SCRIPT_URL = 'PEGAR_URL_APPS_SCRIPT_AQUI';
 
 const GROUPS = [
-  { id:'gestion',   label:'Gestión Interna · CID',      color:'#60a5fa', tools:['flujos','obj','anal'] },
-  { id:'controles', label:'Controles y Seguimiento',     color:'#fb923c', tools:['homo','cruce'] },
-  { id:'informes',  label:'Informes de Gestión',         color:'#34d399', tools:['redis','reportes'] },
+  { id:'gestion',   label:'Gestión Interna · CID',              color:'#60a5fa', tools:['flujos','obj','anal'] },
+  { id:'controles', label:'Controles y Seguimiento',             color:'#fb923c', tools:['homo','cruce'] },
+  { id:'informes',  label:'Informes de Gestión',                 color:'#34d399', tools:['redis','reportes'] },
+  { id:'harvey',    label:'Integración Harvey',                  color:'#a78bfa', tools:[] },
 ];
 
 const TOOLS = [
@@ -334,8 +326,8 @@ const TOOLS = [
   {id:'anal',     name:'Analizador CEJ Supremo',    desc:'Clasifica agendas judiciales con IA (en Claude)', tags:['cej','agendas','excel','supremo','ia'],               icon:'🤖', color:'#fbbf24', url:null, active:false, inactiveDesc:'Esta herramienta usa la API de Anthropic y funciona directamente en Claude.',inactiveLink:'https://claude.ai',inactiveLinkTxt:'Abrir Claude ↗'},
   {id:'homo',     name:'Homologación',              desc:'Validación y homologación de datos procesales',  tags:['homologación','validación','datos'],                  icon:'📋', color:'#fb923c', url:'https://edusanchezcasas-cyber.github.io/Homologacion_21/panel-homologacion-s20.html',         active:true},
   {id:'cruce',    name:'Cruce de Agendas',          desc:'Detección de conflictos en agendas judiciales', tags:['cruce','agendas','audiencias','conflictos'],          icon:'📅', color:'#94a3b8', url:'https://edusanchezcasas-cyber.github.io/cruce-agendas-vt/',        active:true},
-  {id:'redis',    name:'Redistribución de Procesos',desc:'Distribución de ~2,900 procesos entre equipos', tags:['redistribución','procesos','equipos'],                icon:'📊', color:'#2dd4bf', url:'https://edusanchezcasas-cyber.github.io/redistribucion-vt/informe_redistribucion_VT.html',      active:true},
-  {id:'reportes', name:'Reportes CID',              desc:'Plataforma de reportes y análisis de gestión',  tags:['reportes','gestión','análisis','informe'],            icon:'📈', color:'#34d399', url:'https://edusanchezcasas-cyber.github.io/Reportes-cid/',        active:true},
+  {id:'redis',    name:'Informe de Gestión para Socios y Supervisores',desc:'Distribución de ~2,900 procesos entre equipos', tags:['redistribución','procesos','equipos','socios','supervisores','informe'],                icon:'📊', color:'#2dd4bf', url:'https://edusanchezcasas-cyber.github.io/redistribucion-vt/informe_redistribucion_VT.html',      active:true},
+  {id:'reportes', name:'Centro de Reportes',              desc:'Plataforma de reportes y análisis de gestión',  tags:['reportes','gestión','análisis','informe','centro'],            icon:'📈', color:'#34d399', url:'https://edusanchezcasas-cyber.github.io/Reportes-cid/',        active:true},
 ];
 
 const ACTIVITY = [
@@ -395,6 +387,13 @@ function buildNav(){
       grpBody.appendChild(el);
     });
 
+    if(g.tools.length === 0){
+      const empty = document.createElement('div');
+      empty.style.cssText = 'padding:8px 12px 8px 22px;font-size:11px;color:var(--t3);font-style:italic;';
+      empty.textContent = 'Próximamente...';
+      grpBody.appendChild(empty);
+    }
+
     nav.appendChild(pill);
     nav.appendChild(grpBody);
 
@@ -405,14 +404,28 @@ function buildNav(){
   });
 }
 
-function buildQuick(){
-  const g=document.getElementById('qgrid');
-  TOOLS.forEach(t=>{
-    const el=document.createElement('div');
-    el.className='qcard'+(t.active?'':' off');
-    el.innerHTML=`<div class="qi">${t.icon}</div><div class="qinfo"><div class="qn">${t.name}</div><div class="qt">${t.tags.slice(0,2).join(' · ')}</div></div><div class="qa">›</div>`;
-    if(t.active) el.addEventListener('click',()=>openTool(t.id));
-    g.appendChild(el);
+const EXT_LINKS = [
+  { name:'CEJ',          icon:'⚖️', url:'https://cej.pj.gob.pe/cej/forms/busquedaform.html' },
+  { name:'SINOE',        icon:'📁', url:'https://sinoe.pj.gob.pe/' },
+  { name:'CEJ Supremo',  icon:'🏛️', url:'https://cejtacna.pj.gob.pe/cej/forms/busquedaform.html' },
+  { name:'Casilla TC',   icon:'📬', url:'https://casilla.tc.gob.pe/' },
+  { name:'Procuraduría', icon:'🔎', url:'https://www.minjus.gob.pe/procuraduria/' },
+  { name:'Harvey',       icon:'🤖', url:'https://harvey.ai' },
+  { name:'Días hábiles', icon:'📅', url:'https://www.minjus.gob.pe/dias-habiles/' },
+];
+
+function buildExtLinks(){
+  const wrap = document.getElementById('ext-links');
+  EXT_LINKS.forEach(l => {
+    const a = document.createElement('a');
+    a.href = l.url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:9px;font-size:13px;color:var(--t2);text-decoration:none;transition:border-color .15s,background .15s,color .15s;white-space:nowrap;';
+    a.innerHTML = `<span style="font-size:14px;">${l.icon}</span>${l.name}<span style="font-size:11px;opacity:.5;">↗</span>`;
+    a.addEventListener('mouseover', ()=>{ a.style.borderColor='var(--borderh)'; a.style.background='var(--surface2)'; a.style.color='var(--t1)'; });
+    a.addEventListener('mouseout',  ()=>{ a.style.borderColor='var(--border)';  a.style.background='var(--surface)';  a.style.color='var(--t2)'; });
+    wrap.appendChild(a);
   });
 }
 
@@ -666,7 +679,7 @@ document.getElementById('goHome').addEventListener('click', ()=>{
 });
 
 // ══ INIT ══════════════════════════════════════════════════════
-buildNav(); buildQuick(); buildActivity();
+buildNav(); buildExtLinks(); buildActivity();
 </script>
 </body>
 </html>
