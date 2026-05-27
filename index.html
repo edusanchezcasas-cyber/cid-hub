@@ -173,9 +173,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--t1);}
       <div class="sb-logo">CID</div>
       <div class="sb-title"><span>Hub CID</span><small>Vinatea &amp; Toyama</small></div>
     </div>
-    <nav class="sb-nav" id="sb-nav">
-      <div class="nav-group-label">Herramientas</div>
-    </nav>
+    <nav class="sb-nav" id="sb-nav"></nav>
     <div class="sb-footer">
       <div class="sf-row"><div class="sf-dot"></div><span class="sf-txt">Activo</span></div>
       <div id="clock">--:--:--</div>
@@ -207,8 +205,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--t1);}
             <p>Selecciona una herramienta del panel o usa <strong>Ctrl+K</strong> para buscar.</p>
           </div>
           <div class="hstats">
-            <div class="hs"><div class="hl">Herramientas</div><div class="hv">6</div></div>
-            <div class="hs"><div class="hl">Activas</div><div class="hv g">5</div></div>
+            <div class="hs"><div class="hl">Herramientas</div><div class="hv">7</div></div>
+            <div class="hs"><div class="hl">Activas</div><div class="hv g">6</div></div>
             <div class="hs"><div class="hl">Inactivas</div><div class="hv r">1</div></div>
             <div class="hs"><div class="hl">Versión</div><div class="hv o" style="font-size:18px;margin-top:6px">v 1.0</div></div>
           </div>
@@ -324,33 +322,86 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--t1);}
 // Pega aquí la URL de tu Apps Script deployment
 const APPS_SCRIPT_URL = 'PEGAR_URL_APPS_SCRIPT_AQUI';
 
+const GROUPS = [
+  { id:'gestion',   label:'Gestión Interna · CID',      color:'#60a5fa', tools:['flujos','obj','anal'] },
+  { id:'controles', label:'Controles y Seguimiento',     color:'#fb923c', tools:['homo','cruce'] },
+  { id:'informes',  label:'Informes de Gestión',         color:'#34d399', tools:['redis','reportes'] },
+];
+
 const TOOLS = [
-  {id:'flujos', name:'Flujos Procesales',         desc:'Flujos NLPT con búsqueda IA (Gemini)',             tags:['flujos','nlpt','ordinario','abreviado','amparo','ia'], icon:'⚖️', color:'#60a5fa', url:'https://edusanchezcasas-cyber.github.io/flujos-procesales/plataforma_flujos_gemini.html',   active:true},
-  {id:'anal',   name:'Analizador CEJ Supremo',    desc:'Clasifica agendas judiciales con IA (en Claude)',  tags:['cej','agendas','excel','supremo','ia'],                icon:'🤖', color:'#fbbf24', url:null,                      active:false, inactiveDesc:'Esta herramienta usa la API de Anthropic y funciona directamente en Claude.',inactiveLink:'https://claude.ai',inactiveLinkTxt:'Abrir Claude ↗'},
-  {id:'redis',  name:'Redistribución de Procesos',desc:'Distribución de procesos entre equipos',          tags:['redistribución','procesos','equipos'],                icon:'📊', color:'#2dd4bf', url:'https://edusanchezcasas-cyber.github.io/redistribucion-vt/informe_redistribucion_VT.html',       active:true},
-  {id:'obj',    name:'Seguimiento de Objetivos',  desc:'Metas, KPIs y compromisos del equipo CID',        tags:['objetivos','kpis','metas','seguimiento'],             icon:'🎯', color:'#a78bfa', url:'https://edusanchezcasas-cyber.github.io/seguimiento-cid/tracker_cid.html',            active:true},
-  {id:'homo',   name:'Homologación',              desc:'Validación y homologación de datos procesales',   tags:['homologación','validación','datos'],                  icon:'📋', color:'#fb923c', url:'https://edusanchezcasas-cyber.github.io/Homologacion_21/panel-homologacion-s20.html',          active:true},
-  {id:'cruce',  name:'Cruce de Agendas',          desc:'Detección de conflictos en agendas judiciales',  tags:['cruce','agendas','audiencias','conflictos'],          icon:'📅', color:'#94a3b8', url:'https://edusanchezcasas-cyber.github.io/cruce-agendas-vt/',         active:true},
+  {id:'flujos',   name:'Flujos Procesales',         desc:'Flujos NLPT con búsqueda IA (Gemini)',            tags:['flujos','nlpt','ordinario','abreviado','amparo','ia'], icon:'⚖️', color:'#60a5fa', url:'https://edusanchezcasas-cyber.github.io/flujos-procesales/plataforma_flujos_gemini.html',  active:true},
+  {id:'obj',      name:'Seguimiento de Objetivos',  desc:'Metas, KPIs y compromisos del equipo CID',       tags:['objetivos','kpis','metas','seguimiento'],             icon:'🎯', color:'#a78bfa', url:'https://edusanchezcasas-cyber.github.io/seguimiento-cid/tracker_cid.html',           active:true},
+  {id:'anal',     name:'Analizador CEJ Supremo',    desc:'Clasifica agendas judiciales con IA (en Claude)', tags:['cej','agendas','excel','supremo','ia'],               icon:'🤖', color:'#fbbf24', url:null, active:false, inactiveDesc:'Esta herramienta usa la API de Anthropic y funciona directamente en Claude.',inactiveLink:'https://claude.ai',inactiveLinkTxt:'Abrir Claude ↗'},
+  {id:'homo',     name:'Homologación',              desc:'Validación y homologación de datos procesales',  tags:['homologación','validación','datos'],                  icon:'📋', color:'#fb923c', url:'https://edusanchezcasas-cyber.github.io/Homologacion_21/panel-homologacion-s20.html',         active:true},
+  {id:'cruce',    name:'Cruce de Agendas',          desc:'Detección de conflictos en agendas judiciales', tags:['cruce','agendas','audiencias','conflictos'],          icon:'📅', color:'#94a3b8', url:'https://edusanchezcasas-cyber.github.io/cruce-agendas-vt/',        active:true},
+  {id:'redis',    name:'Redistribución de Procesos',desc:'Distribución de ~2,900 procesos entre equipos', tags:['redistribución','procesos','equipos'],                icon:'📊', color:'#2dd4bf', url:'https://edusanchezcasas-cyber.github.io/redistribucion-vt/informe_redistribucion_VT.html',      active:true},
+  {id:'reportes', name:'Reportes CID',              desc:'Plataforma de reportes y análisis de gestión',  tags:['reportes','gestión','análisis','informe'],            icon:'📈', color:'#34d399', url:'https://edusanchezcasas-cyber.github.io/Reportes-cid/',        active:true},
 ];
 
 const ACTIVITY = [
-  {tid:'flujos',action:'Consultado',mins:3},{tid:'redis',action:'Cargado',mins:9},
-  {tid:'obj',   action:'Revisado',  mins:18},{tid:'cruce',action:'Consultado',mins:26},
-  {tid:'homo',  action:'Actualizado',mins:51},{tid:'redis',action:'Consultado',mins:67},
+  {tid:'flujos',  action:'Consultado',  mins:3 },{tid:'reportes',action:'Cargado',    mins:7 },
+  {tid:'obj',     action:'Revisado',    mins:18},{tid:'cruce',   action:'Consultado', mins:26},
+  {tid:'homo',    action:'Actualizado', mins:51},{tid:'redis',   action:'Consultado', mins:67},
 ];
 
 // ══ HUB LOGIC ═════════════════════════════════════════════════
 let currentId=null, focIdx=-1;
 
 function buildNav(){
-  const nav=document.getElementById('sb-nav');
-  TOOLS.forEach((t,i)=>{
-    const el=document.createElement('div');
-    el.className='nav-item'+(t.active?'':' inactive');
-    el.id='nav-'+t.id;
-    el.innerHTML=`<span class="nav-icon">${t.icon}</span><span class="nav-name">${t.name}</span><span class="nav-dot ${t.active?'nd-on':'nd-off'}"></span><span class="nav-key">${i+1}</span>`;
-    if(t.active) el.addEventListener('click',()=>openTool(t.id));
-    nav.appendChild(el);
+  const nav = document.getElementById('sb-nav');
+  nav.innerHTML = '';
+
+  GROUPS.forEach(g => {
+    // ── Píldora / header del grupo ──
+    const pill = document.createElement('div');
+    pill.style.cssText = `display:flex;align-items:center;gap:6px;padding:7px 10px 6px;margin-bottom:2px;cursor:pointer;border-radius:9px;user-select:none;transition:background .15s;`;
+    pill.innerHTML = `
+      <span style="width:8px;height:8px;border-radius:50%;background:${g.color};flex-shrink:0;display:inline-block;"></span>
+      <span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);flex:1;font-weight:500;">${g.label}</span>
+      <span class="grp-arrow" style="font-size:10px;color:var(--t3);transition:transform .2s;">▾</span>`;
+    pill.addEventListener('mouseover', ()=>pill.style.background='rgba(255,255,255,0.04)');
+    pill.addEventListener('mouseout',  ()=>pill.style.background='none');
+
+    // ── Contenedor de tools del grupo ──
+    const grpBody = document.createElement('div');
+    grpBody.className = 'grp-body';
+    grpBody.style.cssText = 'overflow:hidden;transition:max-height .25s cubic-bezier(.4,0,.2,1);';
+
+    // calcular height real tras render
+    let open = true;
+    const setOpen = (v) => {
+      open = v;
+      grpBody.style.maxHeight = v ? grpBody.scrollHeight + 'px' : '0px';
+      pill.querySelector('.grp-arrow').style.transform = v ? 'none' : 'rotate(-90deg)';
+    };
+
+    pill.addEventListener('click', () => {
+      // necesitamos el scrollHeight real
+      grpBody.style.maxHeight = 'none';
+      const full = grpBody.scrollHeight;
+      grpBody.style.maxHeight = open ? full+'px' : '0px';
+      requestAnimationFrame(()=>{ setOpen(!open); });
+    });
+
+    g.tools.forEach((tid, i) => {
+      const t = TOOLS.find(x => x.id === tid);
+      if(!t) return;
+      const el = document.createElement('div');
+      el.className = 'nav-item' + (t.active ? '' : ' inactive');
+      el.id = 'nav-' + t.id;
+      el.style.paddingLeft = '22px';
+      el.innerHTML = `<span class="nav-icon">${t.icon}</span><span class="nav-name">${t.name}</span><span class="nav-dot ${t.active?'nd-on':'nd-off'}"></span>`;
+      if(t.active) el.addEventListener('click', () => openTool(t.id));
+      grpBody.appendChild(el);
+    });
+
+    nav.appendChild(pill);
+    nav.appendChild(grpBody);
+
+    // abrir por defecto tras un frame
+    requestAnimationFrame(()=>{
+      grpBody.style.maxHeight = grpBody.scrollHeight + 'px';
+    });
   });
 }
 
