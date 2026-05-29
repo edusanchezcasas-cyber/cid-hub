@@ -19,7 +19,7 @@
   --coral:#EA580C; --coraldim:rgba(234,88,12,0.1);
   --red:#DC2626; --reddim:rgba(220,38,38,0.1);
   --navy:#1C1C1C; --navytop:#7B1A1A;
-  --sidebar:230px; --topbar:52px;
+  --topbar:52px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;overflow:hidden;}
@@ -30,37 +30,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--t1);}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 /* ══ HUB ══════════════════════════════════════════════════════ */
-#hub{display:flex;height:100%;flex-direction:row;}
-
-/* ── SIDEBAR ── */
-.sidebar{width:var(--sidebar);height:100vh;background:#1C1C1C;border-right:none;display:flex;flex-direction:column;flex-shrink:0;border-top:3px solid var(--gold);}
-.sb-brand{display:flex;align-items:center;gap:10px;padding:17px 14px 15px;border-bottom:1px solid rgba(255,255,255,0.07);cursor:pointer;}
-.sb-brand:hover .sb-logo{border-color:var(--goldtxt);}
-.sb-logo{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);flex-shrink:0;transition:border-color .2s;}.sb-title span{display:block;font-size:14px;font-weight:600;color:#EEF2FF;letter-spacing:-.02em;}
-.sb-title small{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:.04em;}
-.sb-nav{flex:1;padding:10px 8px;overflow-y:auto;}
-.nav-group-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);padding:4px 8px 8px;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:background .15s;user-select:none;}
-.nav-item:not(.inactive):hover{background:rgba(255,255,255,0.08);}
-.nav-item.sel{background:rgba(200,16,46,0.25);border-left:2px solid var(--gold);}
-.nav-item.sel .nav-name{color:#EEF2FF;}
-.nav-item.inactive{opacity:.3;cursor:not-allowed;}
-.nav-icon{font-size:17px;flex-shrink:0;width:24px;text-align:center;}
-.nav-name{font-size:13px;color:rgba(255,255,255,0.55);font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.nav-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.nd-on{background:var(--green);animation:blink 2.4s ease-in-out infinite;}
-.nd-off{background:rgba(255,255,255,0.2);}
-.nav-key{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.06);border-radius:4px;padding:1px 5px;}
-.sb-footer{padding:12px 14px 16px;border-top:1px solid rgba(255,255,255,0.07);}
-.sf-row{display:flex;align-items:center;gap:5px;margin-bottom:7px;}
-.sf-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2.4s ease-in-out infinite;}
-.sf-txt{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:.08em;}
-#clock{font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:500;color:#EEF2FF;letter-spacing:.06em;}
-#datestr{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.25);margin-top:3px;text-transform:uppercase;letter-spacing:.07em;}
+#hub{display:flex;height:100%;flex-direction:column;}
 
 /* ── MAIN ── */
-.main{flex:1;height:100vh;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-.topbar{height:var(--topbar);border-bottom:none;display:flex;align-items:center;gap:10px;padding:0 18px;flex-shrink:0;background:#7B1A1A;border-top:none;box-shadow:0 2px 6px rgba(0,0,0,0.25);}
+.main{flex:1;height:100%;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{height:56px;border-bottom:none;display:flex;align-items:center;gap:12px;padding:0 20px;flex-shrink:0;background:#7B1A1A;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
 .bc-firm{font-size:13px;color:rgba(255,255,255,0.4);}
 .bc-sep{font-size:13px;color:rgba(255,255,255,0.25);}
 #bc-tool{font-size:13px;color:rgba(255,255,255,0.75);font-weight:500;}
@@ -149,7 +123,88 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--t1);}
 .mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:499;}
 #mob-menu-btn{display:none;align-items:center;justify-content:center;background:none;border:none;color:var(--t2);font-size:20px;cursor:pointer;padding:5px 8px;border-radius:6px;margin-right:4px;flex-shrink:0;}
 
-/* ══ AI ANIMATIONS ════════════════════════════════════════════ */
+/* ══ HORIZONTAL NAV BAR ═══════════════════════════════════════ */
+#hnav-wrap{
+  position:relative;background:#FFFFFF;border-bottom:2px solid #E5E7EB;
+  flex-shrink:0;overflow:visible;z-index:100;
+}
+#hnav-scroll{
+  display:flex;align-items:center;gap:0;
+  padding:0 20px;
+  overflow:visible;
+  scroll-behavior:smooth;
+  white-space:nowrap;
+}
+
+/* Cada grupo es un item con dropdown */
+.hnav-group{
+  position:relative;flex-shrink:0;
+}
+.hnav-item{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:14px 20px;white-space:nowrap;cursor:pointer;
+  font-size:13px;font-weight:500;color:#6B7280;
+  border-bottom:3px solid transparent;margin-bottom:-2px;
+  transition:color .18s,border-color .18s,background .15s;
+  user-select:none;position:relative;
+}
+.hnav-group:hover .hnav-item,
+.hnav-item:hover{color:#1A1A1A;}
+.hnav-item.hnav-sel{color:#C8102E;border-bottom-color:#C8102E;font-weight:600;}
+.hnav-group:hover .hnav-item.hnav-sel,
+.hnav-item.hnav-sel:hover{color:#C8102E;}
+
+.hnav-dot{
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;
+}
+.hnav-group:hover .hnav-dot,
+.hnav-item.hnav-sel .hnav-dot{
+  transform:scale(1.4);
+  box-shadow:0 0 8px currentColor;
+}
+
+/* Dropdown de tools al hover */
+.hnav-dropdown{
+  position:absolute;top:100%;left:0;
+  background:#FFFFFF;border:1px solid #E5E7EB;
+  border-top:2px solid var(--gold);
+  border-radius:0 0 10px 10px;
+  padding:10px 12px;
+  display:flex;flex-direction:column;gap:4px;
+  min-width:200px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12);
+  opacity:0;visibility:hidden;
+  transform:translateY(-6px);
+  transition:opacity .2s ease,transform .2s cubic-bezier(.34,1.56,.64,1),visibility .2s;
+  z-index:999;
+}
+.hnav-group:hover .hnav-dropdown{
+  opacity:1;visibility:visible;transform:translateY(0);
+}
+
+.hnav-tool{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:8px;cursor:pointer;
+  font-size:12px;font-weight:500;color:#4A5568;
+  white-space:nowrap;
+  transition:background .15s,color .15s,transform .18s cubic-bezier(.34,1.56,.64,1);
+}
+.hnav-tool:hover{
+  background:#F5F5F5;color:#1A1A1A;
+  transform:translateX(4px);
+}
+.hnav-tool .tool-icon{font-size:15px;flex-shrink:0;}
+.hnav-tool.inactive{opacity:.4;cursor:not-allowed;}
+.hnav-tool.inactive:hover{background:none;color:#4A5568;transform:none;}
+.hnav-prox{font-size:11px;color:#9AABB8;font-style:italic;padding:6px 12px;}
+
+/* Fade derecha */
+#hnav-fade-r{
+  position:absolute;right:0;top:0;bottom:0;width:40px;
+  background:linear-gradient(to right,transparent,#FFFFFF);
+  pointer-events:none;
+}
 
 /* Cursor glow que sigue al mouse */
 #cursor-glow{
@@ -287,34 +342,43 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--t1);}
 <div id="cursor-glow"></div>
 <div class="mob-overlay" id="mob-overlay"></div>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sb-brand" id="goHome">
-      <div class="sb-logo">CID</div>
-      <div class="sb-title"><span>Hub CID</span><small>Vinatea &amp; Toyama</small></div>
-    </div>
-    <nav class="sb-nav" id="sb-nav"></nav>
-    <div class="sb-footer">
-      <div class="sf-row"><div class="sf-dot"></div><span class="sf-txt">Activo</span></div>
-      <div id="clock">--:--:--</div>
-      <div id="datestr">---</div>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
+  <!-- MAIN (sin sidebar) -->
   <div class="main">
     <div class="topbar">
-      <button id="mob-menu-btn" aria-label="Abrir menú">☰</button>
-      <span class="bc-firm">CID Hub</span>
-      <span class="bc-sep">›</span>
+      <!-- Logo -->
+      <div id="goHome" style="display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0;">
+        <div class="sb-logo">CID</div>
+        <div class="sb-title"><span>Hub CID</span><small>Vinatea &amp; Toyama</small></div>
+      </div>
+      <span class="bc-sep" style="margin:0 4px;">›</span>
       <span id="bc-tool">Inicio</span>
       <div class="search-trig" id="searchTrig">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <span>Buscar herramienta...</span>
         <kbd>Ctrl K</kbd>
       </div>
-      <button id="anaBtn" title="Analítica de uso" aria-label="Ver analítica" style="font-size:16px;color:var(--t3);background:none;border:none;cursor:pointer;padding:5px 7px;border-radius:6px;transition:color .15s,background .15s;" onmouseover="this.style.color='var(--goldtxt)';this.style.background='var(--golddim)'" onmouseout="this.style.color='var(--t3)';this.style.background='none'">📊</button>
+      <button id="anaBtn" title="Analítica de uso" aria-label="Ver analítica" style="font-size:16px;color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;padding:5px 7px;border-radius:6px;transition:color .15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">📊</button>
       <button id="newTabBtn" title="Abrir en nueva pestaña" aria-label="Abrir en nueva pestaña">↗</button>
+      <!-- Reloj compacto -->
+      <div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;margin-left:4px;">
+        <div id="clock" style="font-size:15px;letter-spacing:.04em;">--:--:--</div>
+        <div id="datestr" style="font-size:9px;margin-top:1px;">---</div>
+      </div>
+    </div>
+
+    <!-- ── BARRA DESLIZABLE ── -->
+    <div id="hnav-wrap">
+      <div id="hnav-scroll">
+        <!-- Inicio -->
+        <div class="hnav-group">
+          <div class="hnav-item hnav-sel" id="hnav-home">
+            <span class="hnav-dot" style="background:#C8102E;"></span>
+            Inicio
+          </div>
+        </div>
+        <!-- Grupos generados por JS -->
+      </div>
+      <div id="hnav-fade-r"></div>
     </div>
 
     <div class="content">
@@ -322,24 +386,12 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--t1);}
         <div class="home-inner">
           <div class="welcome">
             <h2 id="welcome-name">Bienvenido 👋</h2>
-            <p>Selecciona una herramienta del panel o usa <strong>Ctrl+K</strong> para buscar.</p>
           </div>
-          <div class="hstats">
-            <div class="hs"><div class="hl">Herramientas</div><div class="hv">7</div></div>
-            <div class="hs"><div class="hl">Activas</div><div class="hv g">6</div></div>
-            <div class="hs"><div class="hl">Inactivas</div><div class="hv r">1</div></div>
-            <div class="hs"><div class="hl">Versión</div><div class="hv o" style="font-size:18px;margin-top:6px">v 1.0</div></div>
-          </div>
+          <div class="hstats" style="display:none;"></div>
           <div class="sec-label">Plataformas externas</div>
           <div id="ext-links" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2rem;"></div>
-          <div class="sec-label">Actividad reciente</div>
-          <div class="act-box">
-            <div class="act-head">
-              <span>Registro del sistema</span>
-              <div class="act-live"><div class="act-livdot"></div>EN VIVO</div>
-            </div>
-            <div id="act-list"></div>
-          </div>
+          <div class="sec-label">Directorio de Equipos</div>
+          <div id="team-directory" style="margin-bottom:2rem;"></div>
           <div class="sec-label">Atajos de teclado</div>
           <div class="shortcuts-row">
             <div class="sh-item"><kbd>Ctrl K</kbd> Búsqueda rápida</div>
@@ -468,69 +520,63 @@ const ACTIVITY = [
 // ══ HUB LOGIC ═════════════════════════════════════════════════
 let currentId=null, focIdx=-1;
 
-function buildNav(){
-  const nav = document.getElementById('sb-nav');
-  nav.innerHTML = '';
+// ══ HORIZONTAL NAV ════════════════════════════════════════════
+function buildHNav(){
+  const scroll = document.getElementById('hnav-scroll');
 
   GROUPS.forEach(g => {
-    // ── Píldora / header del grupo ──
-    const pill = document.createElement('div');
-    pill.className = 'grp-pill';
-    pill.style.cssText = `display:flex;align-items:center;gap:6px;padding:7px 10px 6px;margin-bottom:4px;cursor:pointer;user-select:none;`;
-    pill.innerHTML = `
-      <span style="width:8px;height:8px;border-radius:50%;background:${g.color};flex-shrink:0;display:inline-block;box-shadow:0 0 6px ${g.color}88;"></span>
-      <span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);flex:1;font-weight:600;">${g.label}</span>
-      <span class="grp-arrow" style="font-size:10px;color:rgba(255,255,255,0.25);">▾</span>`;
+    // Wrapper del grupo
+    const grp = document.createElement('div');
+    grp.className = 'hnav-group';
 
-    // ── Contenedor de tools del grupo ──
-    const grpBody = document.createElement('div');
-    grpBody.className = 'grp-body';
-    grpBody.style.cssText = 'overflow:hidden;transition:max-height .25s cubic-bezier(.4,0,.2,1);';
+    // Tab item
+    const item = document.createElement('div');
+    item.className = 'hnav-item';
+    item.dataset.group = g.id;
+    item.innerHTML = `<span class="hnav-dot" style="background:${g.color};"></span>${g.label}`;
 
-    // calcular height real tras render
-    let open = true;
-    const setOpen = (v) => {
-      open = v;
-      grpBody.style.maxHeight = v ? grpBody.scrollHeight + 'px' : '0px';
-      pill.querySelector('.grp-arrow').style.transform = v ? 'none' : 'rotate(-90deg)';
-    };
-
-    pill.addEventListener('click', () => {
-      // necesitamos el scrollHeight real
-      grpBody.style.maxHeight = 'none';
-      const full = grpBody.scrollHeight;
-      grpBody.style.maxHeight = open ? full+'px' : '0px';
-      requestAnimationFrame(()=>{ setOpen(!open); });
-    });
-
-    g.tools.forEach((tid, i) => {
-      const t = TOOLS.find(x => x.id === tid);
-      if(!t) return;
-      const el = document.createElement('div');
-      el.className = 'nav-item' + (t.active ? '' : ' inactive');
-      el.id = 'nav-' + t.id;
-      el.style.paddingLeft = '22px';
-      el.innerHTML = `<span class="nav-icon">${t.icon}</span><span class="nav-name">${t.name}</span><span class="nav-dot ${t.active?'nd-on':'nd-off'}"></span>`;
-      if(t.active) el.addEventListener('click', () => openTool(t.id));
-      grpBody.appendChild(el);
-    });
+    // Dropdown
+    const drop = document.createElement('div');
+    drop.className = 'hnav-dropdown';
 
     if(g.tools.length === 0){
-      const empty = document.createElement('div');
-      empty.style.cssText = 'padding:8px 12px 8px 22px;font-size:11px;color:var(--t3);font-style:italic;';
-      empty.textContent = 'Próximamente...';
-      grpBody.appendChild(empty);
+      const emp = document.createElement('div');
+      emp.className = 'hnav-prox';
+      emp.textContent = 'Próximamente...';
+      drop.appendChild(emp);
+    } else {
+      g.tools.forEach(tid => {
+        const t = TOOLS.find(x => x.id === tid);
+        if(!t) return;
+        const btn = document.createElement('div');
+        btn.className = 'hnav-tool' + (t.active ? '' : ' inactive');
+        btn.innerHTML = `<span class="tool-icon">${t.icon}</span>${t.name}`;
+        if(t.active) btn.addEventListener('click', e => {
+          e.stopPropagation();
+          // marcar tab activo
+          document.querySelectorAll('.hnav-item').forEach(i=>i.classList.remove('hnav-sel'));
+          item.classList.add('hnav-sel');
+          document.getElementById('hnav-home').classList.remove('hnav-sel');
+          openTool(t.id);
+        });
+        drop.appendChild(btn);
+      });
     }
 
-    nav.appendChild(pill);
-    nav.appendChild(grpBody);
+    grp.appendChild(item);
+    grp.appendChild(drop);
+    scroll.appendChild(grp);
+  });
 
-    // abrir por defecto tras un frame
-    requestAnimationFrame(()=>{
-      grpBody.style.maxHeight = grpBody.scrollHeight + 'px';
-    });
+  // Click en Inicio
+  document.getElementById('hnav-home').addEventListener('click', ()=>{
+    document.querySelectorAll('.hnav-item').forEach(i=>i.classList.remove('hnav-sel'));
+    document.getElementById('hnav-home').classList.add('hnav-sel');
+    goHome();
   });
 }
+
+function buildNav(){ /* movido a buildHNav */ }
 
 const EXT_LINKS = [
   { name:'CEJ',              icon:'⚖️', url:'https://cej.pj.gob.pe/cej/forms/busquedaform.html' },
@@ -557,17 +603,101 @@ function buildExtLinks(){
   });
 }
 
-function buildActivity(){
-  const list=document.getElementById('act-list');
-  ACTIVITY.forEach(a=>{
-    const t=TOOLS.find(x=>x.id===a.tid);
-    const m=a.mins, time=m<60?`Hace ${m}m`:`Hace ${Math.floor(m/60)}h ${m%60>0?m%60+'m':''}`;
-    const el=document.createElement('div');
-    el.className='act-item';
-    el.innerHTML=`<div class="act-dot" style="background:${t.color}"></div><span class="act-name">${t.name}</span><span class="act-action">${a.action}</span><span class="act-time">${time.trim()}</span>`;
-    list.appendChild(el);
+// ══ DIRECTORIO DE EQUIPOS ═════════════════════════════════════
+const TEAMS = [
+  { id:'morales',  label:'Team Morales',  color:'#C8102E', abogados:['Carlos Morales','Carlos Trelles','Silvia Maldonado'],
+    paralegal:{ correos:'Jose Gutierrez', notif:'Jemima Gonzalez', demandas:'Brando / Alessandra' } },
+  { id:'lagos',    label:'Team Lagos',    color:'#2563EB', abogados:['Cynthia Lagos','Sergio Tejada','Milagritos Sueyoshi','María G. Espinoza','Mariel Abad'],
+    paralegal:{ correos:'Jose Gutierrez', notif:'Jemima Gonzalez', demandas:'Brando / Alessandra' } },
+  { id:'jacinto',  label:'Team Jacinto',  color:'#D97706', abogados:['Katia Jacinto','Iván González','Melissa Flores'],
+    paralegal:{ correos:'Camila Morán', notif:'Nestor Rossell', demandas:'Brando / Alessandra' } },
+  { id:'arias',    label:'Team Arias',    color:'#059669', abogados:['Elyana Arias','Carlos Ciriaco','José Bacalla','Henry López','Andrés Herles','Rodrigo Zavala'],
+    paralegal:{ correos:'Camila Morán', notif:'Nestor Rossell', demandas:'Brando / Alessandra' } },
+  { id:'estrella', label:'Team Estrella', color:'#7C3AED', abogados:['Solanch Estrella','Sofía Yomond','Daniela Torres','Sandra Carrión','Sol Aragón'],
+    paralegal:{ correos:'Jose Gutierrez', notif:'Jemima Gonzalez', demandas:'Brando / Alessandra' } },
+  { id:'paz',      label:'Team Paz',      color:'#0D9488', abogados:['Samuel Paz','Jimena Alcorta','Nuria Vega','Alessandra Zegarra'],
+    paralegal:{ correos:'Camila Morán', notif:'Nestor Rossell', demandas:'Brando / Alessandra' } },
+];
+
+function buildDirectory(){
+  const wrap = document.getElementById('team-directory');
+  if(!wrap) return;
+
+  // Grid 3 columnas
+  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:14px;';
+
+  TEAMS.forEach((team, idx) => {
+    const card = document.createElement('div');
+    card.style.cssText = `
+      background:#FFFFFF;border:1px solid var(--border);border-radius:6px;
+      border-top:3px solid ${team.color};overflow:hidden;
+      transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s ease;
+      animation:floatIn .4s cubic-bezier(.34,1.56,.64,1) both;
+      animation-delay:${idx*0.08}s;
+    `;
+    card.addEventListener('mouseover', ()=>{
+      card.style.transform='translateY(-4px)';
+      card.style.boxShadow=`0 8px 24px ${team.color}22`;
+    });
+    card.addEventListener('mouseout', ()=>{
+      card.style.transform='none';
+      card.style.boxShadow='none';
+    });
+
+    // Header del equipo
+    const head = document.createElement('div');
+    head.style.cssText = `display:flex;align-items:center;gap:8px;padding:10px 12px;background:${team.color}0D;border-bottom:1px solid ${team.color}22;`;
+    head.innerHTML = `
+      <span style="width:9px;height:9px;border-radius:50%;background:${team.color};flex-shrink:0;box-shadow:0 0 6px ${team.color}88;display:inline-block;animation:blink 2.5s ease-in-out infinite;"></span>
+      <span style="font-size:12px;font-weight:700;color:#1A1A1A;letter-spacing:.03em;">${team.label}</span>
+      <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;color:${team.color};background:${team.color}18;padding:2px 7px;border-radius:4px;">${team.abogados.length} abog.</span>
+    `;
+
+    // Lista de abogados
+    const aboWrap = document.createElement('div');
+    aboWrap.style.cssText = 'padding:8px 12px 6px;border-bottom:1px solid var(--border);';
+    aboWrap.innerHTML = `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#9AABB8;font-weight:600;margin-bottom:6px;">Equipo Legal</div>`;
+    team.abogados.forEach(a => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:6px;padding:3px 0;font-size:12px;color:#4A5568;transition:color .15s;';
+      row.innerHTML = `<span style="width:5px;height:5px;border-radius:50%;background:${team.color};opacity:.6;flex-shrink:0;"></span>${a}`;
+      row.addEventListener('mouseover', ()=>row.style.color='#1A1A1A');
+      row.addEventListener('mouseout',  ()=>row.style.color='#4A5568');
+      aboWrap.appendChild(row);
+    });
+
+    // Paralegal
+    const parWrap = document.createElement('div');
+    parWrap.style.cssText = 'padding:8px 12px 10px;background:#FAFAFA;';
+    parWrap.innerHTML = `
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#9AABB8;font-weight:600;margin-bottom:7px;">Paralegal</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10px;color:#9AABB8;">Correos</span>
+          <span style="font-size:11px;color:#4A5568;font-weight:500;">${team.paralegal.correos}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10px;color:#9AABB8;">Notificaciones</span>
+          <span style="font-size:11px;color:#4A5568;font-weight:500;">${team.paralegal.notif}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10px;color:#9AABB8;">Nuevas demandas</span>
+          <span style="font-size:11px;color:${team.color};font-weight:600;">${team.paralegal.demandas}</span>
+        </div>
+      </div>
+    `;
+
+    card.appendChild(head);
+    card.appendChild(aboWrap);
+    card.appendChild(parWrap);
+    wrap.appendChild(card);
   });
 }
+
+// Responsive: 2 col en tablet, 1 en móvil
+const dirStyle = document.createElement('style');
+dirStyle.textContent = '@media(max-width:900px){#team-directory{grid-template-columns:repeat(2,1fr)!important;}}@media(max-width:600px){#team-directory{grid-template-columns:1fr!important;}}';
+document.head.appendChild(dirStyle);
 
 function logAccess(toolId){
   if(APPS_SCRIPT_URL==='PEGAR_URL_APPS_SCRIPT_AQUI') return;
@@ -787,27 +917,10 @@ document.getElementById('ana-reset').addEventListener('click', ()=>{
   if(confirm('¿Limpiar todos los datos de analítica?')){ anaSave({events:[]}); anaRender(); }
 });
 
-// ══ MOBILE MENU ═══════════════════════════════════════════════
-const sidebar = document.querySelector('.sidebar');
-const mobOverlay = document.getElementById('mob-overlay');
-const mobBtn = document.getElementById('mob-menu-btn');
-
-function openSidebar(){ sidebar.classList.add('open'); mobOverlay.style.display='block'; }
-function closeSidebar(){ sidebar.classList.remove('open'); mobOverlay.style.display='none'; }
-
-mobBtn.addEventListener('click', openSidebar);
-mobOverlay.addEventListener('click', closeSidebar);
-
-// Cerrar sidebar al seleccionar tool en móvil
-document.getElementById('sb-nav').addEventListener('click', ()=>{
-  if(window.innerWidth <= 768) closeSidebar();
-});
-document.getElementById('goHome').addEventListener('click', ()=>{
-  if(window.innerWidth <= 768) closeSidebar();
-});
+// ══ MOBILE: sin sidebar, solo cerrar palette con ESC ══════════
 
 // ══ INIT ══════════════════════════════════════════════════════
-buildNav(); buildExtLinks(); buildActivity();
+buildHNav(); buildExtLinks(); buildDirectory();
 
 // ══ CURSOR GLOW ════════════════════════════════════════════════
 const glow = document.getElementById('cursor-glow');
@@ -855,7 +968,8 @@ document.querySelectorAll('.hv').forEach((el, i) => {
 });
 
 // ══ ACTIVITY ITEMS STAGGER ════════════════════════════════════
-document.querySelectorAll('.act-item').forEach((el,i)=>{
+// Stagger de cards del directorio
+document.querySelectorAll('#team-directory > div').forEach((el,i)=>{
   el.style.animationDelay = (i * 0.07) + 's';
 });
 
